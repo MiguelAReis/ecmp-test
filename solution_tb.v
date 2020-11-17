@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 `include "iob_lib.vh"
 
-`define W 96
+`define W 32
 
 module circuit_tb;
 
@@ -10,6 +10,8 @@ module circuit_tb;
    `SIGNAL(en, 1)
    `SIGNAL_OUT(y, `W)
 
+   `SIGNAL(in, 8)
+
    integer i;
    
    initial begin
@@ -17,7 +19,8 @@ module circuit_tb;
       $dumpvars();
       en=0;
       for (i=0; i<100; i=i+1) begin
-         @(posedge clk) #1 en=1; $display("%d: %d",i+1, y);
+        in =$random;
+        @(posedge clk) #10 en=1; $display("Iteration %d: Input %d Output %d",i+1, $signed (in), $signed(y));
       end
 
       @(posedge clk) #100 $finish;
@@ -33,6 +36,7 @@ module circuit_tb;
       .rst(rst),
       .clk(clk),
       .en(en),
+      .in(in),
       .y(y)
       );
 
